@@ -1,0 +1,30 @@
+body {
+  padding-left: 20px;
+  background-color: Lavender;
+}
+
+h1 {
+  font-family: 'Macondo Swash Caps';
+  font-size: 50px;
+}
+
+canvas {
+  margin-top: 10px;
+}
+
+progress {
+  width: 600px;
+  background-color: black;
+}
+
+progress::-webkit-progress-value {
+  background: red;
+}
+
+progress::-webkit-progress-bar {
+  background: white;
+}
+
+#finishScreen {
+  display: none;
+}
