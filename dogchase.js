@@ -1,28 +1,43 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const progressBar = document.querySelector("progress");
-const PUPPY_HEIGHT = 120;
-const PUPPY_WIDTH = 120;
+const PUPPY_SIZE = { width: 80, height: 80 };
 const PLAYER_SPEED = 0.2;
 const PLAYER_INITIAL_LOCATION = { x: 100, y: 100 };
-const PLAYER_SIZE = { width: 100, height: 70 };
+const PLAYER_SIZE = { width: 100, height: 50 };
 const PUPPY_SPEED = { max: 0.4, min: 0.01 };
 
 function generateRandomSpeed() {
-  return Math.random() * PLAYER_SPEED / 10;
+  return Math.random() * PLAYER_SPEED / 5;
 }
 
 function generateRandomPuppyLocation() {
   return Math.random() * canvas.width;
 }
 
-function distanceBetween(sprite1, sprite2) {
-  return Math.hypot(sprite1.x - sprite2.x, sprite1.y - sprite2.y);
+function pushOff(sprite1, sprite2) {
+  let sprite1CenterX = sprite1.x + sprite1.width / 2;
+  let sprite1CenterY = sprite1.y + sprite1.height / 2;
+  let sprite2CenterX = sprite2.x + sprite2.width / 2;
+  let sprite2CenterY = sprite2.y + sprite2.height / 2;
+  if (sprite1CenterX > sprite2CenterX) {
+    sprite1.x += 10;
+  } else {
+    sprite1.x -= 10;
+  }
+  if (sprite1CenterY > sprite2CenterY) {
+    sprite1.y += 10;
+  } else {
+    sprite1.y -= 10;
+  }
 }
 
 function haveCollided(sprite1, sprite2) {
   return (
-    distanceBetween(sprite1, sprite2) < sprite1.width / 2 + sprite2.width / 2
+    sprite1.x + sprite1.width > sprite2.x &&
+    sprite1.y + sprite1.height > sprite2.y &&
+    sprite2.x + sprite2.width > sprite1.x &&
+    sprite2.y + sprite2.height > sprite1.y
   );
 }
 
@@ -33,8 +48,7 @@ class Sprite {
 }
 
 let playerImage = new Image();
-playerImage.src =
-  "http://weclipart.com/gimg/F144DD32ADD9FA52/clipartist-net-clip-art-cartoon-bone-skull-bones-clipartist-net.png";
+playerImage.src = "https://image.ibb.co/gbmjaG/bone.png";
 
 class Player extends Sprite {
   constructor(x, y, width, height, speed) {
@@ -53,8 +67,7 @@ let player = new Player(
 );
 
 let puppyImage = new Image();
-puppyImage.src =
-  "https://stickershop.line-scdn.net/stickershop/v1/product/1028369/LINEStorePC/main@2x.png;compress=true?__=20161019";
+puppyImage.src = "https://image.ibb.co/kOAAFG/puppy.png";
 
 class Puppy extends Sprite {
   constructor(x, y, width, height, speed) {
@@ -68,22 +81,22 @@ let puppies = [
   new Puppy(
     generateRandomPuppyLocation(),
     generateRandomPuppyLocation(),
-    PUPPY_WIDTH,
-    PUPPY_HEIGHT,
+    PUPPY_SIZE.width,
+    PUPPY_SIZE.height,
     generateRandomSpeed()
   ),
   new Puppy(
     generateRandomPuppyLocation(),
     generateRandomPuppyLocation(),
-    PUPPY_WIDTH,
-    PUPPY_HEIGHT,
+    PUPPY_SIZE.width,
+    PUPPY_SIZE.height,
     generateRandomSpeed()
   ),
   new Puppy(
     generateRandomPuppyLocation(),
     generateRandomPuppyLocation(),
-    PUPPY_WIDTH,
-    PUPPY_HEIGHT,
+    PUPPY_SIZE.width,
+    PUPPY_SIZE.height,
     generateRandomSpeed()
   )
 ];
@@ -105,9 +118,21 @@ function moveToward(leader, follower, speed) {
 function updateScene() {
   moveToward(mouse, player, player.speed);
   puppies.forEach(puppy => moveToward(player, puppy, puppy.speed));
+  //   for (let x = 1; x < puppies.length; x++) {
+  //     for (let y = 0; y < x; y++) {
+  //       if (haveCollided(puppies[x], puppies[y])) {
+  //         pushOff(puppies[x], puppies[y])
+  //       }
+  //     }
+  //   }
+  puppies.forEach((puppy, i) => {
+    if (haveCollided(puppy, puppies[(i + 1) % puppies.length])) {
+      pushOff(puppy, puppies[(i + 1) % puppies.length]);
+    }
+  });
   puppies.forEach(puppy => {
     if (haveCollided(puppy, player)) {
-      progressBar.value -= 1;
+      progressBar.value -= 0.5;
     }
   });
 }
