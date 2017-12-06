@@ -8,6 +8,8 @@ const PLAYER_SIZE = { width: 100, height: 50 };
 const PUPPY_SPEED = { max: 0.4, min: 0.01 };
 const TIME_UNTIL_SPAWN = 500;
 let timer = 0;
+let highScore = 0;
+document.getElementById("scoreCounter").innerHTML = highScore;
 
 function generateRandomSpeed() {
   return Math.random() * PLAYER_SPEED / 5;
@@ -112,6 +114,8 @@ function updateScene() {
     }
   });
   if (timer % TIME_UNTIL_SPAWN === 0 && timer > 0) {
+    highScore++;
+    document.getElementById("scoreCounter").innerHTML = highScore;
     puppies.push(
       new Puppy(
         generateRandomPuppyLocation(),
