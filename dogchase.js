@@ -6,6 +6,8 @@ const PLAYER_SPEED = 0.2;
 const PLAYER_INITIAL_LOCATION = { x: 100, y: 100 };
 const PLAYER_SIZE = { width: 100, height: 50 };
 const PUPPY_SPEED = { max: 0.4, min: 0.01 };
+const TIME_UNTIL_SPAWN = 500;
+let timer = 0;
 
 function generateRandomSpeed() {
   return Math.random() * PLAYER_SPEED / 5;
@@ -84,20 +86,6 @@ let puppies = [
     PUPPY_SIZE.width,
     PUPPY_SIZE.height,
     generateRandomSpeed()
-  ),
-  new Puppy(
-    generateRandomPuppyLocation(),
-    generateRandomPuppyLocation(),
-    PUPPY_SIZE.width,
-    PUPPY_SIZE.height,
-    generateRandomSpeed()
-  ),
-  new Puppy(
-    generateRandomPuppyLocation(),
-    generateRandomPuppyLocation(),
-    PUPPY_SIZE.width,
-    PUPPY_SIZE.height,
-    generateRandomSpeed()
   )
 ];
 
@@ -118,23 +106,29 @@ function moveToward(leader, follower, speed) {
 function updateScene() {
   moveToward(mouse, player, player.speed);
   puppies.forEach(puppy => moveToward(player, puppy, puppy.speed));
-  //   for (let x = 1; x < puppies.length; x++) {
-  //     for (let y = 0; y < x; y++) {
-  //       if (haveCollided(puppies[x], puppies[y])) {
-  //         pushOff(puppies[x], puppies[y])
-  //       }
-  //     }
-  //   }
-  puppies.forEach((puppy, i) => {
-    if (haveCollided(puppy, puppies[(i + 1) % puppies.length])) {
-      pushOff(puppy, puppies[(i + 1) % puppies.length]);
-    }
-  });
   puppies.forEach(puppy => {
     if (haveCollided(puppy, player)) {
       progressBar.value -= 0.5;
     }
   });
+  if (timer % TIME_UNTIL_SPAWN === 0 && timer > 0) {
+    puppies.push(
+      new Puppy(
+        generateRandomPuppyLocation(),
+        generateRandomPuppyLocation(),
+        PUPPY_SIZE.width,
+        PUPPY_SIZE.height,
+        generateRandomSpeed()
+      )
+    );
+  }
+  if (puppies.length > 1) {
+    puppies.forEach((puppy, i) => {
+      if (haveCollided(puppy, puppies[(i + 1) % puppies.length])) {
+        pushOff(puppy, puppies[(i + 1) % puppies.length]);
+      }
+    });
+  }
 }
 
 let backgroundImage = new Image();
@@ -163,6 +157,7 @@ function drawScene() {
     endGame();
   } else {
     requestAnimationFrame(drawScene);
+    timer++;
   }
 }
 
