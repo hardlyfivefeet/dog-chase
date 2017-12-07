@@ -5,12 +5,12 @@ const PUPPY_SIZE = { width: 80, height: 80 };
 const PLAYER_SPEED = 8;
 const PLAYER_INITIAL_LOCATION = { x: 100, y: 100 };
 const PLAYER_SIZE = { width: 100, height: 50 };
-const PUPPY_SPEED = { max: PLAYER_SPEED, min: 0.1};
+const PUPPY_SPEED = { max: PLAYER_SPEED, min: 0.1 };
 const TIME_UNTIL_SPAWN = 300;
 let gameEnded = false;
 let timer = 0;
 let highScore = 0;
-document.getElementById('scoreCounter').innerHTML = highScore;
+document.getElementById("scoreCounter").innerHTML = highScore;
 
 function generateRandomSpeed() {
   return Math.random() * (PUPPY_SPEED.max - PUPPY_SPEED.min) + PUPPY_SPEED.min;
@@ -92,6 +92,22 @@ let puppies = [
   )
 ];
 
+function restartGame() {
+  progressBar.value = 100;
+  highScore = 0;
+  document.getElementById("scoreCounter").innerHTML = highScore;
+  requestAnimationFrame(drawScene);
+  puppies = [
+    new Puppy(
+      generateRandomPuppyLocation(),
+      generateRandomPuppyLocation(),
+      PUPPY_SIZE.width,
+      PUPPY_SIZE.height,
+      generateRandomSpeed()
+    )
+  ];
+}
+
 let mouse = { x: 0, y: 0, width: 0, height: 0 };
 document.body.addEventListener("mousemove", updateMouse);
 document.body.addEventListener("click", mouseClick);
@@ -105,17 +121,15 @@ function updateMouse(event) {
 function mouseClick(event) {
   if (gameEnded) {
     gameEnded = false;
-    progressBar.value = 100;
-    highScore = 0;
-    requestAnimationFrame(drawScene);
+    restartGame();
   }
 }
 
 function moveToward(leader, follower, speed) {
-  let leaderCenterX = leader.x + (leader.width / 2);
-  let leaderCenterY = leader.y + (leader.height / 2);
-  let followerCenterX = follower.x + (follower.width / 2);
-  let followerCenterY = follower.y + (follower.height / 2);
+  let leaderCenterX = leader.x + leader.width / 2;
+  let leaderCenterY = leader.y + leader.height / 2;
+  let followerCenterX = follower.x + follower.width / 2;
+  let followerCenterY = follower.y + follower.height / 2;
   let dx = leaderCenterX - followerCenterX;
   let dy = leaderCenterY - followerCenterY;
   let hypot = Math.hypot(dx, dy);
@@ -137,7 +151,7 @@ function updateScene() {
   });
   if (timer % TIME_UNTIL_SPAWN === 0 && timer > 0) {
     highScore++;
-    document.getElementById('scoreCounter').innerHTML = highScore;
+    document.getElementById("scoreCounter").innerHTML = highScore;
     puppies.push(
       new Puppy(
         generateRandomPuppyLocation(),
@@ -172,7 +186,7 @@ function endGame() {
   ctx.fillStyle = "black";
   ctx.textAlign = "center";
   ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
-  ctx.fillText("Click to Restart", canvas.width / 2, canvas.height * 2/3);
+  ctx.fillText("Click to Restart", canvas.width / 2, canvas.height * 2 / 3);
   gameEnded = true;
 }
 
