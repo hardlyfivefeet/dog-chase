@@ -7,6 +7,7 @@ const PLAYER_INITIAL_LOCATION = { x: 100, y: 100 };
 const PLAYER_SIZE = { width: 100, height: 50 };
 const PUPPY_SPEED = { max: PLAYER_SPEED, min: 0.1};
 const TIME_UNTIL_SPAWN = 300;
+let gameEnded = false;
 let timer = 0;
 let highScore = 0;
 document.getElementById('scoreCounter').innerHTML = highScore;
@@ -93,11 +94,21 @@ let puppies = [
 
 let mouse = { x: 0, y: 0, width: 0, height: 0 };
 document.body.addEventListener("mousemove", updateMouse);
+document.body.addEventListener("click", mouseClick);
 
 function updateMouse(event) {
   const canvasRectangle = canvas.getBoundingClientRect();
   mouse.x = event.clientX - canvasRectangle.left;
   mouse.y = event.clientY - canvasRectangle.top;
+}
+
+function mouseClick(event) {
+  if (gameEnded) {
+    gameEnded = false;
+    progressBar.value = 100;
+    highScore = 0;
+    requestAnimationFrame(drawScene);
+  }
 }
 
 function moveToward(leader, follower, speed) {
@@ -121,7 +132,7 @@ function updateScene() {
   puppies.forEach(puppy => moveToward(player, puppy, puppy.speed));
   puppies.forEach(puppy => {
     if (haveCollided(puppy, player)) {
-      progressBar.value -= 0.25;
+      progressBar.value -= 0.5;
     }
   });
   if (timer % TIME_UNTIL_SPAWN === 0 && timer > 0) {
@@ -157,10 +168,12 @@ function clearBackground() {
 
 function endGame() {
   clearBackground();
-  ctx.font = "80px Macondo Swash Caps";
+  ctx.font = "60px Macondo Swash Caps";
   ctx.fillStyle = "black";
   ctx.textAlign = "center";
   ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+  ctx.fillText("Click to Restart", canvas.width / 2, canvas.height * 2/3);
+  gameEnded = true;
 }
 
 function drawScene() {
