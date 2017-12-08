@@ -5,8 +5,8 @@ const PUPPY_SIZE = { width: 80, height: 80 };
 const PLAYER_SPEED = 8;
 const PLAYER_INITIAL_LOCATION = { x: 100, y: 100 };
 const PLAYER_SIZE = { width: 100, height: 50 };
-const PUPPY_SPEED = { max: PLAYER_SPEED, min: 0.1 };
-const TIME_UNTIL_SPAWN = 300;
+const PUPPY_SPEED = { max: PLAYER_SPEED, min: 1 };
+const TIME_UNTIL_SPAWN = 350;
 let gameEnded = false;
 let timer = 0;
 let highScore = 0;
@@ -18,32 +18,6 @@ function generateRandomSpeed() {
 
 function generateRandomPuppyLocation() {
   return Math.random() * canvas.width;
-}
-
-function pushOff(sprite1, sprite2) {
-  let sprite1CenterX = sprite1.x + sprite1.width / 2;
-  let sprite1CenterY = sprite1.y + sprite1.height / 2;
-  let sprite2CenterX = sprite2.x + sprite2.width / 2;
-  let sprite2CenterY = sprite2.y + sprite2.height / 2;
-  if (sprite1CenterX > sprite2CenterX) {
-    sprite1.x += 5;
-  } else {
-    sprite1.x -= 5;
-  }
-  if (sprite1CenterY > sprite2CenterY) {
-    sprite1.y += 5;
-  } else {
-    sprite1.y -= 5;
-  }
-}
-
-function haveCollided(sprite1, sprite2) {
-  return (
-    sprite1.x + sprite1.width > sprite2.x &&
-    sprite1.y + sprite1.height > sprite2.y &&
-    sprite2.x + sprite2.width > sprite1.x &&
-    sprite2.y + sprite2.height > sprite1.y
-  );
 }
 
 class Sprite {
@@ -108,6 +82,32 @@ function restartGame() {
   ];
 }
 
+function pushOff(sprite1, sprite2) {
+  let sprite1CenterX = sprite1.x + sprite1.width / 2;
+  let sprite1CenterY = sprite1.y + sprite1.height / 2;
+  let sprite2CenterX = sprite2.x + sprite2.width / 2;
+  let sprite2CenterY = sprite2.y + sprite2.height / 2;
+  if (sprite1CenterX > sprite2CenterX) {
+    sprite1.x += 5;
+  } else {
+    sprite1.x -= 5;
+  }
+  if (sprite1CenterY > sprite2CenterY) {
+    sprite1.y += 5;
+  } else {
+    sprite1.y -= 5;
+  }
+}
+
+function haveCollided(sprite1, sprite2) {
+  return (
+    sprite1.x + sprite1.width > sprite2.x &&
+    sprite1.y + sprite1.height > sprite2.y &&
+    sprite2.x + sprite2.width > sprite1.x &&
+    sprite2.y + sprite2.height > sprite1.y
+  );
+}
+
 let mouse = { x: 0, y: 0, width: 0, height: 0 };
 document.body.addEventListener("mousemove", updateMouse);
 document.body.addEventListener("click", mouseClick);
@@ -147,6 +147,7 @@ function updateScene() {
   puppies.forEach(puppy => {
     if (haveCollided(puppy, player)) {
       progressBar.value -= 0.5;
+      pushOff(puppy, player);
     }
   });
   if (timer % TIME_UNTIL_SPAWN === 0 && timer > 0) {
