@@ -7,6 +7,7 @@ const PLAYER_INITIAL_LOCATION = { x: 100, y: 100 };
 const PLAYER_SIZE = { width: 100, height: 50 };
 const PUPPY_SPEED = { max: PLAYER_SPEED * 0.6, min: PLAYER_SPEED * 0.05 };
 const TIME_UNTIL_SPAWN = 350;
+const MAX_PUPPIES = 5;
 let gameEnded = false;
 let timer = 0;
 let highScore = 0;
@@ -151,17 +152,23 @@ function updateScene() {
     }
   });
   if (timer % TIME_UNTIL_SPAWN === 0 && timer > 0) {
-    highScore++;
-    document.getElementById("scoreCounter").innerHTML = highScore;
-    puppies.push(
-      new Puppy(
-        generateRandomPuppyLocation(),
-        generateRandomPuppyLocation(),
-        PUPPY_SIZE.width,
-        PUPPY_SIZE.height,
-        generateRandomSpeed()
-      )
-    );
+    if (puppies.length === MAX_PUPPIES) {
+      highScore += 2;
+      document.getElementById("scoreCounter").innerHTML = highScore;
+      puppies.forEach(puppy => puppy.speed++);
+    } else {
+      highScore++;
+      document.getElementById("scoreCounter").innerHTML = highScore;
+      puppies.push(
+        new Puppy(
+          generateRandomPuppyLocation(),
+          generateRandomPuppyLocation(),
+          PUPPY_SIZE.width,
+          PUPPY_SIZE.height,
+          generateRandomSpeed()
+        )
+      );
+    }
   }
   for (let x = 0; x < puppies.length; x++) {
     for (let y = puppies.length - 1; y > x; y--) {
