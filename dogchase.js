@@ -29,6 +29,7 @@ class Sprite {
 
 let playerImage = new Image();
 playerImage.src = "https://image.ibb.co/gbmjaG/bone.png";
+//source: https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiwjsvLjPzXAhVmVWMKHRamCwgQjRwIBw&url=http%3A%2F%2Ficons.mysitemyway.com%2Flegacy-icon%2F114787-magic-marker-icon-animals-bone%2F&psig=AOvVaw33BGqRPHc36XGG3FcEdRHC&ust=1512880302317917
 
 class Player extends Sprite {
   constructor(x, y, width, height, speed) {
@@ -48,6 +49,7 @@ let player = new Player(
 
 let puppyImage = new Image();
 puppyImage.src = "https://image.ibb.co/kOAAFG/puppy.png";
+//source: https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwjD0pX6i_zXAhVBImMKHdOJDdYQjRwIBw&url=https%3A%2F%2Fstore.line.me%2Fstickershop%2Fproduct%2F1028369%2Fen&psig=AOvVaw0OM14vr7M7L-Z1SJhqGaPj&ust=1512880168851593
 
 class Puppy extends Sprite {
   constructor(x, y, width, height, speed) {
